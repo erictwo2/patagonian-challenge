@@ -13,8 +13,8 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-@Document(collection = "tracks")
-public class Track {
+@Document(collection = "songs")
+public class Song {
 
     @Id
     @JsonProperty("id")
