@@ -5,15 +5,12 @@ import com.patagonian.challenge.model.Song;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.Mappings;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", uses=ArtistMapper.class)
 public interface SongMapper {
 
-    @Mappings({
-        @Mapping(source = "externalUrl", target = "externalUrlDto"),
-        @Mapping(source = "artists", target = "artistDtos")
-    })
-    SongDto songToSongDto(Song track);
+    @Mapping(source = "externalUrl", target = "externalUrlDto")
+    @Mapping(source = "artists", target = "artistDtos")
+    SongDto songToSongDto(Song song);
 
 }

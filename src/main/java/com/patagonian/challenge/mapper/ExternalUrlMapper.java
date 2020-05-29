@@ -8,6 +8,6 @@ import org.mapstruct.Mapper;
 @Mapper(componentModel = "spring")
 public interface ExternalUrlMapper {
 
-    ExternalUrlDto externalUrlToExternalUrlDto(ExternalUrl track);
+    ExternalUrlDto externalUrlToExternalUrlDto(ExternalUrl externalUrl);
 
 }
