@@ -21,8 +21,8 @@ public class TrackServiceImple implements TrackService {
     @Autowired
     private SongMapper songMapper;
 
-    public SongsDto findAll() {
-        List<Track> list = trackRepository.findAll();
+    public SongsDto findAllByArtistName(String artistName) {
+        List<Track> list = trackRepository.findByArtists_Name(artistName);
         SongsDto songsDto = new SongsDto();
         songsDto.setSongs(songMapper.tracksToSongDtos(list));
         return songsDto;

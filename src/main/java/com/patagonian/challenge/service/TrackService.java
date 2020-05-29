@@ -4,6 +4,6 @@ import com.patagonian.challenge.dto.SongsDto;
 
 public interface TrackService {
 
-    SongsDto findAll();
+    SongsDto findAllByArtistName(String artistName);
 
 }
