@@ -2,7 +2,7 @@ package com.patagonian.challenge.controller;
 
 import javax.validation.constraints.Size;
 
-import com.patagonian.challenge.dto.SongFullDto;
+import com.patagonian.challenge.dto.SongDto;
 import com.patagonian.challenge.dto.SongsDto;
 import com.patagonian.challenge.service.SongService;
 
@@ -28,7 +28,7 @@ public class SongController {
     }
 
     @GetMapping("/{songId}")
-    public SongFullDto findById(@PathVariable String songId) {
+    public SongDto findById(@PathVariable String songId) {
         return songService.findById(songId);
     }
 

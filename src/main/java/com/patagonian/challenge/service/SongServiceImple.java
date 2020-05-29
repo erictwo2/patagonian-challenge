@@ -3,10 +3,10 @@ package com.patagonian.challenge.service;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.patagonian.challenge.dto.SongFullDto;
+import com.patagonian.challenge.dto.SongDto;
 import com.patagonian.challenge.dto.SongsDto;
-import com.patagonian.challenge.mapper.SongFullMapper;
 import com.patagonian.challenge.mapper.SongMapper;
+import com.patagonian.challenge.mapper.SimpleSongMapper;
 import com.patagonian.challenge.model.Song;
 import com.patagonian.challenge.repository.SongRepository;
 
@@ -20,21 +20,21 @@ public class SongServiceImple implements SongService {
     private SongRepository songRepository;
 
     @Autowired
-    private SongMapper songMapper;
+    private SimpleSongMapper simpleSongMapper;
 
     @Autowired
-    private SongFullMapper songFullMapper;
+    private SongMapper songMapper;
 
     public SongsDto findAllByArtistName(String artistName) {
         List<Song> list = songRepository.findByArtists_Name(artistName);
         SongsDto songsDto = new SongsDto();
-        songsDto.setSongs(songMapper.songsToSongDtos(list));
+        songsDto.setSongs(simpleSongMapper.songsToSimpleSongDtos(list));
         return songsDto;
     }
 
-    public SongFullDto findById(String id) {
+    public SongDto findById(String id) {
         Song song = songRepository.findById(id).orElse(null);
-        return songFullMapper.trackToSongDto(song);
+        return songMapper.songToSongDto(song);
     }
 
 }
