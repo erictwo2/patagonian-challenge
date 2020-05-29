@@ -1,11 +1,9 @@
 package com.patagonian.challenge.service;
 
-import java.util.List;
-
-import com.patagonian.challenge.model.Track;
+import com.patagonian.challenge.dto.SongsDto;
 
 public interface TrackService {
 
-    List<Track> findAll();
+    SongsDto findAll();
 
 }

@@ -3,6 +3,7 @@ package com.patagonian.challenge.controller;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.patagonian.challenge.dto.SongsDto;
 import com.patagonian.challenge.model.Track;
 import com.patagonian.challenge.service.TrackService;
 
@@ -19,7 +20,7 @@ public class TrackController {
     private TrackService trackService;
 
     @GetMapping
-    public List<Track> getAllTracks() {
+    public SongsDto getAllTracks() {
         return trackService.findAll();
     }
 
