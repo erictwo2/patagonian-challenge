@@ -1,7 +1,5 @@
 package com.patagonian.challenge.dto;
 
-import java.util.List;
-
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -11,8 +9,9 @@ import lombok.ToString;
 @Setter
 @ToString
 @NoArgsConstructor
-public class SongsDto {
+public class SimpleSongDto {
 
-    List<SimpleSongDto> songs;
+    private String songId;
+    private String songTitle;
 
 }

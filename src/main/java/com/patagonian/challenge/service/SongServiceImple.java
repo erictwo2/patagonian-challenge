@@ -3,8 +3,11 @@ package com.patagonian.challenge.service;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.patagonian.challenge.dto.SongDto;
 import com.patagonian.challenge.dto.SongsDto;
+import com.patagonian.challenge.exception.NotFoundException;
 import com.patagonian.challenge.mapper.SongMapper;
+import com.patagonian.challenge.mapper.SimpleSongMapper;
 import com.patagonian.challenge.model.Song;
 import com.patagonian.challenge.repository.SongRepository;
 
@@ -18,13 +21,21 @@ public class SongServiceImple implements SongService {
     private SongRepository songRepository;
 
     @Autowired
+    private SimpleSongMapper simpleSongMapper;
+
+    @Autowired
     private SongMapper songMapper;
 
     public SongsDto findAllByArtistName(String artistName) {
         List<Song> list = songRepository.findByArtists_Name(artistName);
         SongsDto songsDto = new SongsDto();
-        songsDto.setSongs(songMapper.tracksToSongDtos(list));
+        songsDto.setSongs(simpleSongMapper.songsToSimpleSongDtos(list));
         return songsDto;
+    }
+
+    public SongDto findById(String id) {
+        Song song = songRepository.findById(id).orElseThrow(() -> new NotFoundException("Song not found"));
+        return songMapper.songToSongDto(song);
     }
 
 }
