@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.patagonian.challenge.dto.SongDto;
 import com.patagonian.challenge.dto.SongsDto;
+import com.patagonian.challenge.exception.NotFoundException;
 import com.patagonian.challenge.mapper.SongMapper;
 import com.patagonian.challenge.mapper.SimpleSongMapper;
 import com.patagonian.challenge.model.Song;
@@ -33,7 +34,7 @@ public class SongServiceImple implements SongService {
     }
 
     public SongDto findById(String id) {
-        Song song = songRepository.findById(id).orElse(null);
+        Song song = songRepository.findById(id).orElseThrow(() -> new NotFoundException("Song not found"));
         return songMapper.songToSongDto(song);
     }
 
