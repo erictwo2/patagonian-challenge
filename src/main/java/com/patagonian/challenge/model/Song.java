@@ -43,7 +43,7 @@ public class Song {
 
     @JsonProperty("external_urls")
     @Field("external_urls")
-    private ExternalUrl externalUrls;
+    private ExternalUrl externalUrl;
 
     @JsonProperty("href")
     private String href;
