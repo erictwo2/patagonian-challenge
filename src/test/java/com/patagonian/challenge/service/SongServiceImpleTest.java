@@ -1,8 +1,5 @@
 package com.patagonian.challenge.service;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
@@ -28,7 +25,7 @@ import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import org.junit.jupiter.api.Assertions;
+import static org.assertj.core.api.Assertions.*;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
@@ -48,76 +45,76 @@ public class SongServiceImpleTest {
 
     @Test
 	void songServiceLoaded() {
-        assertNotNull(songService);
+        assertThat(songService).isNotNull();
     }
 
     @Test
 	void findAllByArtistName() {
 
-        SongsDto expected = new SongsDto();
-        expected.setSongs(new ArrayList<SimpleSongDto>());
-        expected.getSongs().add(new SimpleSongDto("1AVu7Kc2MRrLfOG1RCEf07", "Californication"));
-        expected.getSongs().add(new SimpleSongDto("17UUYZ290omPaJY4wKeyHh", "Can't Stop"));
-        expected.getSongs().add(new SimpleSongDto("48zFZh27QU5qsrBjn4C2FA", "Bob"));
-
+        SongsDto actualSongDto = new SongsDto();
+        actualSongDto.setSongs(new ArrayList<SimpleSongDto>());
+        actualSongDto.getSongs().add(new SimpleSongDto("1AVu7Kc2MRrLfOG1RCEf07", "Californication"));
+        actualSongDto.getSongs().add(new SimpleSongDto("17UUYZ290omPaJY4wKeyHh", "Can't Stop"));
+        actualSongDto.getSongs().add(new SimpleSongDto("48zFZh27QU5qsrBjn4C2FA", "Bob"));
         when(songRepository.findByArtists_Name(any(String.class))).thenReturn(new ArrayList<>());
-        when(simpleSongMapper.songsToSimpleSongDtos(any(List.class))).thenReturn(expected.getSongs());
+        when(simpleSongMapper.songsToSimpleSongDtos(any(List.class))).thenReturn(actualSongDto.getSongs());
 
-        SongsDto result = songService.findAllByArtistName("Red Hot Chili Peppers");
+        SongsDto expectedSongDto = songService.findAllByArtistName("Red Hot Chili Peppers");
 
-        assertNotNull(result);
-        assertEquals(result.getSongs().size(), 3);
-        assertTrue(result.getSongs().equals(expected.getSongs()));
+        assertThat(expectedSongDto).isNotNull();
+        assertThat(expectedSongDto.getSongs().size()).isEqualTo(3);
+        assertThat(expectedSongDto.getSongs()).containsExactly(
+            new SimpleSongDto("1AVu7Kc2MRrLfOG1RCEf07", "Californication"),
+            new SimpleSongDto("17UUYZ290omPaJY4wKeyHh", "Can't Stop"),
+            new SimpleSongDto("48zFZh27QU5qsrBjn4C2FA", "Bob")
+        );
     }
 
     @Test
 	void findById() {
 
-        Song expected = new Song();
-        SongDto expectedDto = new SongDto();
-        expectedDto.setId("1AVu7Kc2MRrLfOG1RCEf07");
-        expectedDto.setName("Californication");
-        expectedDto.setType("track");
-        expectedDto.setExplicit(false);
-        expectedDto.setHref("https://api.spotify.com/v1/tracks/1AVu7Kc2MRrLfOG1RCEf07");
-        expectedDto.setUri("spotify:track:1AVu7Kc2MRrLfOG1RCEf07");
-        expectedDto.setTrackNumber(1);
-        expectedDto.setDiscNumber(1);
-        expectedDto.setDurationMs(187653l);
-        expectedDto.setExternalUrlDto(new ExternalUrlDto("https://open.spotify.com/track/1AVu7Kc2MRrLfOG1RCEf07"));
-        expectedDto.setLocal(false);
-        expectedDto.setPlayable(null);
-        expectedDto.setPreviewUrl("https://p.scdn.co/mp3-preview/c44e64aa965da19475a0fc2fc1dfb9c4ea94c191?cid=7ade872bdb9e43dbb376145736fe2384");
-        
+        Song actualSong = new Song();
+        SongDto actualSongDto = new SongDto();
+        actualSongDto.setId("1AVu7Kc2MRrLfOG1RCEf07");
+        actualSongDto.setName("Californication");
+        actualSongDto.setType("track");
+        actualSongDto.setExplicit(false);
+        actualSongDto.setHref("https://api.spotify.com/v1/tracks/1AVu7Kc2MRrLfOG1RCEf07");
+        actualSongDto.setUri("spotify:track:1AVu7Kc2MRrLfOG1RCEf07");
+        actualSongDto.setTrackNumber(1);
+        actualSongDto.setDiscNumber(1);
+        actualSongDto.setDurationMs(187653l);
+        actualSongDto.setExternalUrlDto(new ExternalUrlDto("https://open.spotify.com/track/1AVu7Kc2MRrLfOG1RCEf07"));
+        actualSongDto.setLocal(false);
+        actualSongDto.setPlayable(null);
+        actualSongDto.setPreviewUrl("https://p.scdn.co/mp3-preview/c44e64aa965da19475a0fc2fc1dfb9c4ea94c191?cid=7ade872bdb9e43dbb376145736fe2384");
         ArtistDto artistDto = new ArtistDto();
         artistDto.setId("1i8SpTcr7yvPOmcqrbnVXY");
         artistDto.setName("Red Hot Chili Peppers");
         artistDto.setType("artist");
         artistDto.setHref("https://api.spotify.com/v1/artists/1i8SpTcr7yvPOmcqrbnVXY");
         artistDto.setUri("spotify:artist:1i8SpTcr7yvPOmcqrbnVXY");
+        actualSongDto.setArtistDtos(new ArrayList<ArtistDto>());
+        actualSongDto.getArtistDtos().add(artistDto);
+        actualSongDto.setExternalUrlDto(new ExternalUrlDto("https://open.spotify.com/artist/1i8SpTcr7yvPOmcqrbnVXY"));
+        when(songRepository.findById(any(String.class))).thenReturn(Optional.of(actualSong));
+        when(songMapper.songToSongDto(any(Song.class))).thenReturn(actualSongDto);
 
-        expectedDto.setArtistDtos(new ArrayList<ArtistDto>());
-        expectedDto.getArtistDtos().add(artistDto);
-        expectedDto.setExternalUrlDto(new ExternalUrlDto("https://open.spotify.com/artist/1i8SpTcr7yvPOmcqrbnVXY"));
+        SongDto expectedSongDto = songService.findById("1AVu7Kc2MRrLfOG1RCEf07");
 
-        when(songRepository.findById(any(String.class))).thenReturn(Optional.of(expected));
-        when(songMapper.songToSongDto(any(Song.class))).thenReturn(expectedDto);
-
-        SongDto result = songService.findById("1AVu7Kc2MRrLfOG1RCEf07");
-
-        assertNotNull(result);
-        assertEquals(result.getId(), expectedDto.getId());
+        assertThat(expectedSongDto).isNotNull();
+        assertThat(expectedSongDto).isEqualTo(actualSongDto);
     }
 
     @Test
 	void findByIdNotFoundException() {
 
-        NotFoundException ex = Assertions.assertThrows(NotFoundException.class, () -> {
-            when(songRepository.findById(any(String.class))).thenReturn(Optional.empty());
-            songService.findById("99999999999999999999");
-		});
+        when(songRepository.findById(any(String.class))).thenReturn(Optional.empty());
 
-		assertEquals(ex.getMessage(), "Song not found");
+        assertThatExceptionOfType(NotFoundException.class).isThrownBy(() -> {    
+            songService.findById("99999999999999999999");
+        }).withMessage("Song not found");
+ 
     }
 
 }
