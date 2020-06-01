@@ -19,7 +19,7 @@ client_credentials_manager = SpotifyClientCredentials()
 sp = spotipy.Spotify(client_credentials_manager=client_credentials_manager)
 
 def get_args():
-  parser = argparse.ArgumentParser(description='Gets albums from artist')
+  parser = argparse.ArgumentParser(description='Persist all tracks from artists')
   parser.add_argument('-a', '--artists', nargs="+", required=True, help='Artists IDs separated by commas')
   return parser.parse_args()
 
@@ -50,25 +50,18 @@ def find_artist_tracks_by_album(album):
   return tracks
 
 def persist_tracks(tracks):
-  
-  MONGO_HOST = os.environ.get("MONGO_HOST")
-  MONGO_USERNAME = os.environ.get("MONGO_USERNAME")
-  MONGO_PASSWORD = os.environ.get("MONGO_PASSWORD")
-  MONGO_AUTHSOURCE = os.environ.get("MONGO_AUTHSOURCE")
-  
   client = MongoClient(
-    MONGO_HOST,
-    username=MONGO_USERNAME,
-    password=MONGO_PASSWORD,
-    authSource=MONGO_AUTHSOURCE
+    os.environ.get("MONGO_HOST"),
+    username=os.environ.get("MONGO_USERNAME"),
+    password=os.environ.get("MONGO_PASSWORD"),
+    authSource=os.environ.get("MONGO_AUTHSOURCE")
   )
   db = client.get_database('patagonian')
 
   # TODO: bulk upsert refactor 
   for track in tracks:
-    id = track['id']
     trackJson = json.loads(json.dumps(track))
-    db.songs.find_one_and_update({"id": id}, {"$set": trackJson}, upsert=True)
+    db.songs.find_one_and_update({"id": track['id']}, {"$set": trackJson}, upsert=True)
 
 def main():
   args = get_args()
@@ -76,7 +69,7 @@ def main():
   for artist in artists:
     tracks = find_artist_tracks(artist)
     logger.info(" " + str(len(tracks)) + " " + tracks[0]['artists'][0]['name'] + " songs found")
-    persist_tracks(tracks)    
+    persist_tracks(tracks)
 
 if __name__ == '__main__':
   main()
