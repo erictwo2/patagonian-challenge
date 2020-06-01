@@ -48,7 +48,7 @@ public class SongControllerTest {
 
     @BeforeEach
     public void setup() {
-		baseUrl = "http://localhost:" + randomServerPort + "/songs";
+		baseUrl = "http://localhost:" + randomServerPort + "/api/v1/songs";
 	}
 
     @Test

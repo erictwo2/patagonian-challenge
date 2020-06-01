@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/songs")
+@RequestMapping("/api/v1/songs")
 @Validated
 public class SongController {
 
