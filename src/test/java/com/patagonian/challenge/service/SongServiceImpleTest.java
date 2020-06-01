@@ -44,7 +44,7 @@ public class SongServiceImpleTest {
     SongServiceImple songService;
 
     @Test
-	void serviceLoaded() {
+	void serviceLoad() {
         assertThat(songService).isNotNull();
     }
 
