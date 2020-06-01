@@ -2,15 +2,13 @@ package com.patagonian.challenge.dto;
 
 import java.util.List;
 
-import lombok.Getter;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
 
-@Getter
-@Setter
-@ToString
+@Data
 @NoArgsConstructor
+@AllArgsConstructor
 public class SongsDto {
 
     List<SimpleSongDto> songs;
