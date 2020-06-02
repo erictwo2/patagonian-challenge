@@ -19,7 +19,7 @@ artista. Actualizar la especificación de la API para reflejar los cambios reali
 
 ## Frameworks
 
-El stack tecnológico y la base de datos elegidos son:
+El stack tecnológico elegido es:
 
 Back-end:
 * Java 8
@@ -47,6 +47,9 @@ docker network create patagonian_net
 # desplegar mongo-db y api-rest
 docker-compose up --build -d
 ```
+
+**Nota:** los puertos utilizados por MongoDB y Spring Boot son 27017 y 8080 respectivamente.
+
 ## Script
 
 Para ejecutar el script que inserta las canciones de los artistas debe seguir los siguientes pasos:
@@ -61,3 +64,16 @@ Para ejecutar el script que inserta las canciones de los artistas debe seguir lo
 	```bash 
 	docker run --network=patagonian_net python-script -a 3jO7X5KupvwmWTHGtHgcgo 1QOmebWGB6FdFtW7Bo3F0W
 	```
+
+## Endpoints de ejemplo
+
+A continuación se encuentran unos endpoint de ejemplo que puede probar con su navegador.
+
+**Nota:** antes de ingresar a los siguientes endpoints asegúrese de haber deplegado la API REST y haber ejecutado el script con los ID's de ejemplo.
+
+
+[http://localhost:8080/api/v1/songs?artistName=Gustavo%20Cerati](http://localhost:8080/api/v1/songs?artistName=Gustavo%20Cerati)
+
+[http://localhost:8080/api/v2/songs?artistName=Gustavo%20Cerati&page=0&size=10&sort=asc](http://localhost:8080/api/v2/songs?artistName=Gustavo%20Cerati&page=0&size=10&sort=asc)
+
+[http://localhost:8080/api/v2/songs/5ed6164b6416a02c8268c826](http://localhost:8080/api/v2/songs/5ed6164b6416a02c8268c826)
