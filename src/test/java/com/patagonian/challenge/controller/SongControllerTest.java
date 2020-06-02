@@ -6,6 +6,7 @@ import com.patagonian.challenge.dto.SimpleSongDto;
 import com.patagonian.challenge.dto.SongDto;
 import com.patagonian.challenge.dto.SongsDto;
 import com.patagonian.challenge.exception.NotFoundException;
+import com.patagonian.challenge.helper.RestSlice;
 import com.patagonian.challenge.service.SongService;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -18,6 +19,8 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.SliceImpl;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,6 +33,7 @@ import static org.mockito.Mockito.when;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.List;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment=WebEnvironment.RANDOM_PORT)
@@ -48,7 +52,7 @@ public class SongControllerTest {
 
     @BeforeEach
     public void setup() {
-		baseUrl = "http://localhost:" + randomServerPort + "/api/v1/songs";
+		baseUrl = "http://localhost:" + randomServerPort;
 	}
 
     @Test
@@ -61,7 +65,7 @@ public class SongControllerTest {
         actualSongsDto.getSongs().add(new SimpleSongDto("48zFZh27QU5qsrBjn4C2FA", "Bob"));
         when(songService.findAllByArtistName(any(String.class))).thenReturn(actualSongsDto);
 		
-		URI uri = new URI(baseUrl + "?artistName=Red Hot Chili Peppers".replaceAll(" ", "%20"));
+		URI uri = new URI(baseUrl + "/api/v1/songs?artistName=Red Hot Chili Peppers".replaceAll(" ", "%20"));
 		ResponseEntity<SongsDto> response = restTemplate.exchange(uri, HttpMethod.GET, null, new ParameterizedTypeReference<SongsDto>() {});
 		SongsDto expectedSongsDto = response.getBody();
 
@@ -76,9 +80,69 @@ public class SongControllerTest {
     }
 
     @Test
-	void findAllByArtistNameWithInvalidSize() throws URISyntaxException {
+	void findAllByArtistNameWithInvalidArtistNameSize() throws URISyntaxException {
 
-        URI uri = new URI(baseUrl + "?artistName=Re");
+        URI uri = new URI(baseUrl + "/api/v1/songs?artistName=Re");
+        ResponseEntity<SongsDto> response = restTemplate.exchange(uri, HttpMethod.GET, null, new ParameterizedTypeReference<SongsDto>() {});
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+    }
+
+    @Test
+	void findAllByArtistNamePaginated() throws URISyntaxException {
+
+        List<SimpleSongDto> actualSimpleSongsDto = new ArrayList<SimpleSongDto>();
+        actualSimpleSongsDto.add(new SimpleSongDto("1AVu7Kc2MRrLfOG1RCEf07", "Californication"));
+        actualSimpleSongsDto.add(new SimpleSongDto("17UUYZ290omPaJY4wKeyHh", "Can't Stop"));
+        actualSimpleSongsDto.add(new SimpleSongDto("48zFZh27QU5qsrBjn4C2FA", "Bob"));
+        Slice<SimpleSongDto> actualSimpleSongsDtoSlice = new SliceImpl<SimpleSongDto>(actualSimpleSongsDto);
+        when(songService.findAllByArtistName(any(String.class), any(Integer.class), any(Integer.class), any(String.class))).thenReturn(actualSimpleSongsDtoSlice);
+		
+		URI uri = new URI(baseUrl + "/api/v2/songs?artistName=Red Hot Chili Peppers&page=0&size=5&sort=asc".replaceAll(" ", "%20"));
+		ResponseEntity<RestSlice<SimpleSongDto>> response = restTemplate.exchange(uri, HttpMethod.GET, null, new ParameterizedTypeReference<RestSlice<SimpleSongDto>>() {});
+		RestSlice<SimpleSongDto> expectedSimpleSongsDtoSlice = response.getBody();
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(expectedSimpleSongsDtoSlice).isNotNull();
+        assertThat(expectedSimpleSongsDtoSlice.getNumberOfElements()).isEqualTo(3);
+        assertThat(expectedSimpleSongsDtoSlice.getContent()).containsExactly(
+            new SimpleSongDto("1AVu7Kc2MRrLfOG1RCEf07", "Californication"),
+            new SimpleSongDto("17UUYZ290omPaJY4wKeyHh", "Can't Stop"),
+            new SimpleSongDto("48zFZh27QU5qsrBjn4C2FA", "Bob")
+        );
+    }
+
+    @Test
+	void findAllByArtistNamePaginatedWithInvalidArtistNameMinSize() throws URISyntaxException {
+
+        URI uri = new URI(baseUrl + "/api/v2/songs?artistName=Re");
+        ResponseEntity<SongsDto> response = restTemplate.exchange(uri, HttpMethod.GET, null, new ParameterizedTypeReference<SongsDto>() {});
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+    }
+
+    @Test
+	void findAllByArtistNamePaginatedWithInvalidMinPage() throws URISyntaxException {
+
+        URI uri = new URI(baseUrl + "/api/v2/songs?artistName=Red Hot Chili Peppers&page=-1&size=5&sort=asc".replaceAll(" ", "%20"));
+        ResponseEntity<SongsDto> response = restTemplate.exchange(uri, HttpMethod.GET, null, new ParameterizedTypeReference<SongsDto>() {});
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+    }
+
+    @Test
+	void findAllByArtistNamePaginatedWithInvalidMinSize() throws URISyntaxException {
+
+        URI uri = new URI(baseUrl + "/api/v2/songs?artistName=Red Hot Chili Peppers&page=0&size=1&sort=asc".replaceAll(" ", "%20"));
+        ResponseEntity<SongsDto> response = restTemplate.exchange(uri, HttpMethod.GET, null, new ParameterizedTypeReference<SongsDto>() {});
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+    }
+
+    @Test
+	void findAllByArtistNamePaginatedWithInvalidMaxSize() throws URISyntaxException {
+
+        URI uri = new URI(baseUrl + "/api/v2/songs?artistName=Red Hot Chili Peppers&page=0&size=51&sort=asc".replaceAll(" ", "%20"));
         ResponseEntity<SongsDto> response = restTemplate.exchange(uri, HttpMethod.GET, null, new ParameterizedTypeReference<SongsDto>() {});
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
@@ -112,9 +176,17 @@ public class SongControllerTest {
         actualSongDto.setExternalUrlDto(new ExternalUrlDto("https://open.spotify.com/artist/1i8SpTcr7yvPOmcqrbnVXY"));
         when(songService.findById(any(String.class))).thenReturn(actualSongDto);
 		
-		URI uri = new URI(baseUrl + "/1AVu7Kc2MRrLfOG1RCEf07");
+		URI uri = new URI(baseUrl + "/api/v1/songs/1AVu7Kc2MRrLfOG1RCEf07");
 		ResponseEntity<SongDto> response = restTemplate.exchange(uri, HttpMethod.GET, null, new ParameterizedTypeReference<SongDto>() {});
 		SongDto expectedSongDto = response.getBody();
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(expectedSongDto).isNotNull();
+        assertThat(expectedSongDto).isEqualTo(actualSongDto);
+
+        uri = new URI(baseUrl + "/api/v2/songs/1AVu7Kc2MRrLfOG1RCEf07");
+		response = restTemplate.exchange(uri, HttpMethod.GET, null, new ParameterizedTypeReference<SongDto>() {});
+		expectedSongDto = response.getBody();
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(expectedSongDto).isNotNull();
@@ -126,8 +198,13 @@ public class SongControllerTest {
 
         when(songService.findById(any(String.class))).thenThrow(new NotFoundException("Song not found"));
 
-        URI uri = new URI(baseUrl + "/99999999999999999999");
+        URI uri = new URI(baseUrl + "/api/v1/songs/99999999999999999999");
         ResponseEntity<SongsDto> response = restTemplate.exchange(uri, HttpMethod.GET, null, new ParameterizedTypeReference<SongsDto>() {});
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+
+        uri = new URI(baseUrl + "/api/v2/songs/99999999999999999999");
+        response = restTemplate.exchange(uri, HttpMethod.GET, null, new ParameterizedTypeReference<SongsDto>() {});
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND); 
     }
