@@ -6,6 +6,7 @@ import static org.mockito.Mockito.when;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Function;
 
 import com.patagonian.challenge.dto.ArtistDto;
 import com.patagonian.challenge.dto.ExternalUrlDto;
@@ -18,6 +19,9 @@ import com.patagonian.challenge.mapper.SongMapper;
 import com.patagonian.challenge.model.Song;
 import com.patagonian.challenge.repository.SongRepository;
 
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.SliceImpl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -49,7 +53,7 @@ public class SongServiceImpleTest {
     }
 
     @Test
-	void findByArtists_NameIgnoreCaseOrderByNameAsc() {
+	void findAllByArtistName() {
 
         SongsDto actualSongDto = new SongsDto();
         actualSongDto.setSongs(new ArrayList<SimpleSongDto>());
@@ -64,6 +68,39 @@ public class SongServiceImpleTest {
         assertThat(expectedSongDto).isNotNull();
         assertThat(expectedSongDto.getSongs().size()).isEqualTo(3);
         assertThat(expectedSongDto.getSongs()).containsExactly(
+            new SimpleSongDto("1AVu7Kc2MRrLfOG1RCEf07", "Californication"),
+            new SimpleSongDto("17UUYZ290omPaJY4wKeyHh", "Can't Stop"),
+            new SimpleSongDto("48zFZh27QU5qsrBjn4C2FA", "Bob")
+        );
+    }
+
+    @Test
+	void findAllByArtistNamePaginated() {
+
+        List<Song> songs = new ArrayList<Song>();
+        Song song1 = new Song();
+        song1.setId("1AVu7Kc2MRrLfOG1RCEf07");
+        song1.setName("Californication");
+        Song song2 = new Song();
+        song2.setId("17UUYZ290omPaJY4wKeyHh");
+        song2.setName("Can't Stop");
+        Song song3 = new Song();
+        song3.setId("48zFZh27QU5qsrBjn4C2FA");
+        song3.setName("Bob");
+        songs.add(song1);
+        songs.add(song2);
+        songs.add(song3);
+        Slice<Song> actualSongsSlice = new SliceImpl<Song>(songs);
+        when(songRepository.findByArtists_NameIgnoreCase(any(String.class), any(Pageable.class))).thenReturn(actualSongsSlice);
+        when(simpleSongMapper.songToSimpleSongDto(song1)).thenReturn(new SimpleSongDto("1AVu7Kc2MRrLfOG1RCEf07", "Californication"));
+        when(simpleSongMapper.songToSimpleSongDto(song2)).thenReturn(new SimpleSongDto("17UUYZ290omPaJY4wKeyHh", "Can't Stop"));
+        when(simpleSongMapper.songToSimpleSongDto(song3)).thenReturn(new SimpleSongDto("48zFZh27QU5qsrBjn4C2FA", "Bob"));
+
+        Slice<SimpleSongDto> expectedSongsDtoSlice = songService.findAllByArtistName("Red Hot Chili Peppers", 0, 5, "asc");
+
+        assertThat(expectedSongsDtoSlice).isNotNull();
+        assertThat(expectedSongsDtoSlice.getNumberOfElements()).isEqualTo(3);
+        assertThat(expectedSongsDtoSlice.getContent()).containsExactly(
             new SimpleSongDto("1AVu7Kc2MRrLfOG1RCEf07", "Californication"),
             new SimpleSongDto("17UUYZ290omPaJY4wKeyHh", "Can't Stop"),
             new SimpleSongDto("48zFZh27QU5qsrBjn4C2FA", "Bob")
