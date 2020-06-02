@@ -48,7 +48,7 @@ public class SongControllerTest {
 
     @BeforeEach
     public void setup() {
-		baseUrl = "http://localhost:" + randomServerPort + "/api/v1/songs";
+		baseUrl = "http://localhost:" + randomServerPort;
 	}
 
     @Test
@@ -61,7 +61,7 @@ public class SongControllerTest {
         actualSongsDto.getSongs().add(new SimpleSongDto("48zFZh27QU5qsrBjn4C2FA", "Bob"));
         when(songService.findAllByArtistName(any(String.class))).thenReturn(actualSongsDto);
 		
-		URI uri = new URI(baseUrl + "?artistName=Red Hot Chili Peppers".replaceAll(" ", "%20"));
+		URI uri = new URI(baseUrl + "/api/v1/songs?artistName=Red Hot Chili Peppers".replaceAll(" ", "%20"));
 		ResponseEntity<SongsDto> response = restTemplate.exchange(uri, HttpMethod.GET, null, new ParameterizedTypeReference<SongsDto>() {});
 		SongsDto expectedSongsDto = response.getBody();
 
@@ -78,7 +78,7 @@ public class SongControllerTest {
     @Test
 	void findAllByArtistNameWithInvalidSize() throws URISyntaxException {
 
-        URI uri = new URI(baseUrl + "?artistName=Re");
+        URI uri = new URI(baseUrl + "/api/v1/songs?artistName=Re");
         ResponseEntity<SongsDto> response = restTemplate.exchange(uri, HttpMethod.GET, null, new ParameterizedTypeReference<SongsDto>() {});
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
@@ -112,7 +112,7 @@ public class SongControllerTest {
         actualSongDto.setExternalUrlDto(new ExternalUrlDto("https://open.spotify.com/artist/1i8SpTcr7yvPOmcqrbnVXY"));
         when(songService.findById(any(String.class))).thenReturn(actualSongDto);
 		
-		URI uri = new URI(baseUrl + "/1AVu7Kc2MRrLfOG1RCEf07");
+		URI uri = new URI(baseUrl + "/api/v1/songs/1AVu7Kc2MRrLfOG1RCEf07");
 		ResponseEntity<SongDto> response = restTemplate.exchange(uri, HttpMethod.GET, null, new ParameterizedTypeReference<SongDto>() {});
 		SongDto expectedSongDto = response.getBody();
 
@@ -126,7 +126,7 @@ public class SongControllerTest {
 
         when(songService.findById(any(String.class))).thenThrow(new NotFoundException("Song not found"));
 
-        URI uri = new URI(baseUrl + "/99999999999999999999");
+        URI uri = new URI(baseUrl + "/api/v1/songs/99999999999999999999");
         ResponseEntity<SongsDto> response = restTemplate.exchange(uri, HttpMethod.GET, null, new ParameterizedTypeReference<SongsDto>() {});
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND); 
