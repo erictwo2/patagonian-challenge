@@ -13,8 +13,17 @@ services:
       - MONGODB_APPLICATION_PASS=patagonian
     ports:
       - 27017:27017
-    volumes:
-      - ./mongo-volume:/data/db
+    networks:
+      - default
+
+  spring-boot:
+    build:
+      context: ./
+      dockerfile: spring-boot-app-docker/Dockerfile
+    depends_on:
+      - mongo
+    ports:
+      - 8080:8080
     networks:
       - default
 
