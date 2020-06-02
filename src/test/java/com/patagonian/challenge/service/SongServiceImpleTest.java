@@ -49,14 +49,14 @@ public class SongServiceImpleTest {
     }
 
     @Test
-	void findAllByArtistName() {
+	void findByArtists_NameIgnoreCaseOrderByNameAsc() {
 
         SongsDto actualSongDto = new SongsDto();
         actualSongDto.setSongs(new ArrayList<SimpleSongDto>());
         actualSongDto.getSongs().add(new SimpleSongDto("1AVu7Kc2MRrLfOG1RCEf07", "Californication"));
         actualSongDto.getSongs().add(new SimpleSongDto("17UUYZ290omPaJY4wKeyHh", "Can't Stop"));
         actualSongDto.getSongs().add(new SimpleSongDto("48zFZh27QU5qsrBjn4C2FA", "Bob"));
-        when(songRepository.findByArtists_Name(any(String.class))).thenReturn(new ArrayList<>());
+        when(songRepository.findByArtists_NameIgnoreCaseOrderByNameAsc(any(String.class))).thenReturn(new ArrayList<>());
         when(simpleSongMapper.songsToSimpleSongDtos(any(List.class))).thenReturn(actualSongDto.getSongs());
 
         SongsDto expectedSongDto = songService.findAllByArtistName("Red Hot Chili Peppers");
