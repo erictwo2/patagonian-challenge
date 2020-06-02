@@ -1,0 +1,139 @@
+#%RAML 1.0
+title: Challenge Tecnico API
+description: Challenge para candidatos a Backend Developers - PatagonianTech
+mediaType: application/json
+version: v2
+
+/songs:
+  description: Collection of available songs
+  get:
+    description: Get a paginated list of songs based on the song title.
+    queryParameters:
+      artistName:
+        description: "The name of the artist (case insensitive and doesn't need to match the whole name of the artist)"
+        required: true
+        minLength: 3
+        maxLength: 100
+        type: string
+        example: "Gustavo Cerati"
+      page?:
+        description: The `page` parameter specifies the page of results to return.
+        type: integer
+        default: 0
+        minimum: 0
+      size?:
+        description: The `size` parameter restricts the number of entries returned.
+        type: integer
+        default: 10
+        minimum: 5
+        maximum: 50
+      sort?:
+        description: The `sort` parameter specifies the direction sort of the song name.
+        type: string
+        default: asc
+        example: asc, desc
+    responses:
+      200:
+        body:
+          application/json:
+            example: |
+              {
+                "content": [
+                  {
+                    "songId": "5ed5dea129b845d120cf35d7",
+                    "songTitle": "Fuerza Natural - En Vivo en Monterrey"
+                  },
+                  {
+                    "songId": "5ed5dea129b845d120cf35d9",
+                    "songTitle": "Magia - En Vivo en Monterrey"
+                  },
+                  {
+                    "songId": "5ed5dea129b845d120cf35db",
+                    "songTitle": "Déjà Vu - En Vivo en Monterrey"
+                  },
+                  {
+                    "songId": "5ed5dea129b845d120cf35dd",
+                    "songTitle": "Desastre - En Vivo en Monterrey"
+                  },
+                  {
+                    "songId": "5ed5dea129b845d120cf35df",
+                    "songTitle": "Rapto - En Vivo en Monterrey"
+                  }
+                ],
+                "pageable": {
+                  "sort": {
+                    "sorted": false,
+                    "unsorted": true,
+                    "empty": true
+                  },
+                  "pageNumber": 0,
+                  "pageSize": 5,
+                  "offset": 0,
+                  "paged": true,
+                  "unpaged": false
+                },
+                "totalPages": 28,
+                "totalElements": 137,
+                "last": false,
+                "first": true,
+                "number": 0,
+                "sort": {
+                  "sorted": false,
+                  "unsorted": true,
+                  "empty": true
+                },
+                "numberOfElements": 5,
+                "size": 5,
+                "empty": false
+              }
+      404:
+          body:
+            application/json:
+              example: |
+                {
+                  "size":"has to be greater than or equal to 5",
+                  "page":"has to be greater than or equal to 0"
+                }
+  /{songId}:
+    description: Song entity
+    get:
+      description: Get the song with `songId = {songId}`
+      responses:
+        200:
+          body:
+            application/json:
+              example: |
+                {
+                  "artists": [
+                    {
+                      "external_urls": {
+                        "spotify": "https://open.spotify.com/artist/08td7MxkoHQkXnWAYD8d6Q"
+                      },
+                      "href": "https://api.spotify.com/v1/artists/08td7MxkoHQkXnWAYD8d6Q",
+                      "id": "08td7MxkoHQkXnWAYD8d6Q",
+                      "name": "Tania Bowra",
+                      "type": "artist",
+                      "uri": "spotify:artist:08td7MxkoHQkXnWAYD8d6Q"
+                    }
+                  ],
+                  "disc_number": 1,
+                  "duration_ms": 276773,
+                  "explicit": false,
+                  "external_urls": {
+                    "spotify": "https://open.spotify.com/track/2TpxZ7JUBn3uw46aR7qd6V"
+                  },
+                  "href": "https://api.spotify.com/v1/tracks/2TpxZ7JUBn3uw46aR7qd6V",
+                  "id": "2TpxZ7JUBn3uw46aR7qd6V",
+                  "is_local": false,
+                  "is_playable": true,
+                  "name": "All I Want",
+                  "preview_url": "https://p.scdn.co/mp3-preview/12b8cee72118f995f5494e1b34251e4ac997445e?cid=774b29d4f13844c495f206cafdad9c86",
+                  "track_number": 1,
+                  "type": "track",
+                  "uri": "spotify:track:2TpxZ7JUBn3uw46aR7qd6V"
+                }
+        404:
+          body:
+            application/json:
+              example: |
+                {"message": "Song not found"}
