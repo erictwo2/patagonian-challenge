@@ -96,11 +96,11 @@ public class SongServiceImpleTest {
         when(simpleSongMapper.songToSimpleSongDto(song2)).thenReturn(new SimpleSongDto("17UUYZ290omPaJY4wKeyHh", "Can't Stop"));
         when(simpleSongMapper.songToSimpleSongDto(song3)).thenReturn(new SimpleSongDto("48zFZh27QU5qsrBjn4C2FA", "Bob"));
 
-        Slice<SimpleSongDto> expectedSongsDtoSlice = songService.findAllByArtistName("Red Hot Chili Peppers", 0, 5, "asc");
+        Slice<SimpleSongDto> expectedSimpleSongDtosSlice = songService.findAllByArtistName("Red Hot Chili Peppers", 0, 5, "asc");
 
-        assertThat(expectedSongsDtoSlice).isNotNull();
-        assertThat(expectedSongsDtoSlice.getNumberOfElements()).isEqualTo(3);
-        assertThat(expectedSongsDtoSlice.getContent()).containsExactly(
+        assertThat(expectedSimpleSongDtosSlice).isNotNull();
+        assertThat(expectedSimpleSongDtosSlice.getNumberOfElements()).isEqualTo(3);
+        assertThat(expectedSimpleSongDtosSlice.getContent()).containsExactly(
             new SimpleSongDto("1AVu7Kc2MRrLfOG1RCEf07", "Californication"),
             new SimpleSongDto("17UUYZ290omPaJY4wKeyHh", "Can't Stop"),
             new SimpleSongDto("48zFZh27QU5qsrBjn4C2FA", "Bob")
