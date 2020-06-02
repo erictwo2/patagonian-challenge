@@ -33,7 +33,7 @@ public class SongController {
 
     @GetMapping("/v2/songs")
     public Slice<SimpleSongDto> findAllByArtistName(
-        @RequestParam @Size(min = 3, max = 100) String artistName,
+        @RequestParam @Size(min = 3) String artistName,
         @RequestParam(defaultValue = "0") @Min(0) Integer page,
         @RequestParam(defaultValue = "10") @Min(5) @Max(50) Integer size,
         @RequestParam(defaultValue = "asc") String sort
