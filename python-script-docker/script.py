@@ -57,8 +57,6 @@ def persist_tracks(tracks):
     authSource=os.environ.get("MONGO_AUTHSOURCE")
   )
   db = client.get_database('patagonian')
-
-  # TODO: bulk upsert refactor 
   for track in tracks:
     trackJson = json.loads(json.dumps(track))
     db.songs.find_one_and_update({"id": track['id']}, {"$set": trackJson}, upsert=True)
