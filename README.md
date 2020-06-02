@@ -1,7 +1,7 @@
 
 # Patagonian Challenge
 
-Este proyecto resuelve la prueba técnica planteada por Patagonian para el puesto de Desarrollador Back-End.
+Este proyecto resuelve la prueba técnica planteada por Patagonian para candidatos a Backend Developers.
 Dicha prueba consiste en:
 
 1. Escribir un script que cargue en una base de datos todas las canciones de una lista de ID's de artistas
