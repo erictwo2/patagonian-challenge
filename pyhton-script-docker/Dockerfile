@@ -11,6 +11,6 @@ ADD script.py /
 ADD .env /
 
 #docker network create patagonian_net
-#docker build -t python-example . && docker run --network=patagonian_net python-example -a 6ZZ2DeepA3GpoGU4KwqSlU
+#docker build -t python-script ./pyhton-script-docker/. && docker run --network=patagonian_net python-script -a 6ZZ2DeepA3GpoGU4Kw
 
 ENTRYPOINT [ "python", "./script.py" ]
