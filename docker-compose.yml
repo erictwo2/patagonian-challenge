@@ -3,20 +3,31 @@ version: '3.1'
 services:
 
   mongo:
-    image: mongo
-    restart: always
+    image: aashreys/mongo-auth:latest
+    environment:
+      - AUTH=yes
+      - MONGODB_ADMIN_USER=admin
+      - MONGODB_ADMIN_PASS=admin123
+      - MONGODB_APPLICATION_DATABASE=patagonian
+      - MONGODB_APPLICATION_USER=patagonian
+      - MONGODB_APPLICATION_PASS=patagonian
     ports:
       - 27017:27017
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: patagonian
-      MONGO_INITDB_ROOT_PASSWORD: patagonian
-      MONGO_INITDB_DATABASE: patagonian
+    networks:
+      - default
 
-  mongo-express:
-    image: mongo-express
-    restart: always
+  spring-boot:
+    build:
+      context: ./
+      dockerfile: spring-boot-app-docker/Dockerfile
+    depends_on:
+      - mongo
     ports:
-      - 8081:8081
-    environment:
-      ME_CONFIG_MONGODB_ADMINUSERNAME: patagonian
-      ME_CONFIG_MONGODB_ADMINPASSWORD: patagonian
+      - 8080:8080
+    networks:
+      - default
+
+networks:
+  default:
+    external:
+       name: patagonian_net
