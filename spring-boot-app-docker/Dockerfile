@@ -9,6 +9,4 @@ RUN mvn -B dependency:resolve dependency:resolve-plugins
 
 COPY src /build/src
 
-EXPOSE 8080
-
 ENTRYPOINT ["mvn", "spring-boot:run"]
