@@ -8,7 +8,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ExternalUrlDto {
-
-    private String spotify;
-
+  private String spotify;
 }

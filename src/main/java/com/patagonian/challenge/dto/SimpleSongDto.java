@@ -10,8 +10,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @EqualsAndHashCode
 public class SimpleSongDto {
-
-    private String songId;
-    private String songTitle;
-
+  private String songId;
+  private String songTitle;
 }
